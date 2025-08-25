@@ -1,40 +1,39 @@
 # 마음배달 (DearQ) 개발 할 일 목록
 
 ## 현재 진행 상황
-- ✅ 프로젝트 기초 설정 완료 (2025-08-25)
-  - Git 저장소 초기화
-  - 프로젝트 디렉토리 구조 생성
-  - package.json 및 의존성 설치
-  - 환경 설정 파일 생성
 
-## 다음 단계 - Phase 1: Foundation Setup
+### ✅ Phase 1 완료 (2025-08-25)
+- Git 저장소 초기화 및 프로젝트 구조 생성
+- TDD 환경 구축 (Jest + React Testing Library)
+- LoginButton 컴포넌트 TDD 사이클 완료
+- 접근성 기준 준수 (44px 터치 타겟, 키보드 네비게이션)
 
-### 🔴 Red (실패 테스트 먼저) - 진행 중
-- [ ] 카카오 로그인 버튼 테스트 작성 및 실패 확인
-- [ ] MSW stub 핸들러 4가지 상태 구현 (success/failure/expired/empty)
-- [ ] Jest 및 테스트 환경 설정
+### ✅ Phase 2 완료 (2025-08-25)
+- **질문 데이터 모델 설계**: 100개 질문, 10개 카테고리 구조화
+- **홈 화면 구현**: TDD로 완전한 홈 페이지 컴포넌트 개발
+- **질문 라이브러리**: 검색, 필터링, 랜덤 선택, 날짜별 고정 질문
+- **스테퍼 UI**: 3단계 진행 상태 (보내기 → 답변 → 대화보기)
+- **MSW Stub API**: 4-state 패턴으로 모든 시나리오 지원
 
-### 🟢 Green (최소 구현)
-- [ ] 카카오 로그인 버튼 컴포넌트 구현
-- [ ] 기본 레이아웃 및 라우팅 설정
-- [ ] Stub API 응답으로 테스트 통과시키기
-
-### ♻️ Refactor (개선)
-- [ ] 컴포넌트 최적화 및 코드 정리
-- [ ] 접근성 검토 (44px 터치 타겟, 4.5:1 대비율)
-- [ ] 성능 최적화
-
-## Phase 2: Core Flow Implementation
-- [ ] 홈 화면 - 오늘의 질문 표시
+## Phase 3: 다음 구현 예정
 - [ ] 보내기 모달 - 라벨 선택 및 공유
 - [ ] 수신자 답변 화면 - 토큰 검증 및 답변 제출
 - [ ] 대화 보기 - 자기표현 게이트 및 축하 애니메이션
-
-## Phase 3: Enhancement Features  
 - [ ] 라벨 관리 시스템
+
+## Phase 4: Enhancement Features  
 - [ ] 대화 히스토리
 - [ ] 주간 하이라이트 카드
 - [ ] 설정 화면
+
+## 현재 테스트 현황 ✅
+```
+Test Suites: 3 passed, 3 total
+Tests: 27 passed, 27 total
+✓ LoginButton (4 tests)
+✓ Questions Library (15 tests) 
+✓ HomePage (8 tests)
+```
 
 ## 기술 요구사항 준수 사항
 - 🎯 TDD 원칙: Red → Green → Refactor

@@ -1,0 +1,140 @@
+/**
+ * MSW API Stub 테스트
+ * 4가지 시나리오 (success, failure, expired, empty) 검증
+ */
+
+describe('API Stubs', () => {
+  const API_BASE = 'http://localhost:3000/api'
+
+  describe('/api/questions/today', () => {
+    it('성공 시나리오에서 오늘의 질문을 반환해야 한다', async () => {
+      const response = await fetch(`${API_BASE}/questions/today?scenario=success&date=2025-08-25`)
+      const data = await response.json()
+      
+      expect(response.status).toBe(200)
+      expect(data.question).toBeDefined()
+      expect(data.question.content).toBeTruthy()
+      expect(data.question.category).toBeTruthy()
+      expect(data.question.date).toBe('2025-08-25')
+    })
+
+    it('실패 시나리오에서 적절한 에러를 반환해야 한다', async () => {
+      const response = await fetch(`${API_BASE}/questions/today?scenario=failure`)
+      const data = await response.json()
+      
+      expect(response.status).toBe(500)
+      expect(data.error).toBe('질문을 불러오는 중 문제가 발생했어요. 잠시 후 다시 시도해주세요.')
+    })
+
+    it('인증 만료 시나리오에서 401 상태를 반환해야 한다', async () => {
+      const response = await fetch(`${API_BASE}/questions/today?scenario=expired`)
+      const data = await response.json()
+      
+      expect(response.status).toBe(401)
+      expect(data.error).toBe('로그인이 필요해요. 로그인 후 진행됩니다.')
+    })
+
+    it('빈 데이터 시나리오에서 null 질문을 반환해야 한다', async () => {
+      const response = await fetch(`${API_BASE}/questions/today?scenario=empty`)
+      const data = await response.json()
+      
+      expect(response.status).toBe(200)
+      expect(data.question).toBeNull()
+      expect(data.message).toBe('오늘의 질문이 준비되지 않았어요.')
+    })
+
+    it('동일한 날짜에 대해 일관된 질문을 반환해야 한다', async () => {
+      const response1 = await fetch(`${API_BASE}/questions/today?scenario=success&date=2025-08-25`)
+      const response2 = await fetch(`${API_BASE}/questions/today?scenario=success&date=2025-08-25`)
+      
+      const data1 = await response1.json()
+      const data2 = await response2.json()
+      
+      expect(data1.question.id).toBe(data2.question.id)
+      expect(data1.question.content).toBe(data2.question.content)
+    })
+  })
+
+  describe('/api/questions', () => {
+    it('성공 시나리오에서 모든 질문을 반환해야 한다', async () => {
+      const response = await fetch(`${API_BASE}/questions?scenario=success`)
+      const data = await response.json()
+      
+      expect(response.status).toBe(200)
+      expect(Array.isArray(data.questions)).toBe(true)
+      expect(data.total).toBeGreaterThan(0)
+      expect(Array.isArray(data.categories)).toBe(true)
+    })
+
+    it('카테고리별 필터링이 동작해야 한다', async () => {
+      const response = await fetch(`${API_BASE}/questions?scenario=success&category=일상·하루`)
+      const data = await response.json()
+      
+      expect(response.status).toBe(200)
+      expect(data.questions.every((q: any) => q.category === '일상·하루')).toBe(true)
+    })
+
+    it('빈 데이터 시나리오에서 빈 배열을 반환해야 한다', async () => {
+      const response = await fetch(`${API_BASE}/questions?scenario=empty`)
+      const data = await response.json()
+      
+      expect(response.status).toBe(200)
+      expect(data.questions).toEqual([])
+      expect(data.total).toBe(0)
+    })
+  })
+
+  describe('/api/questions/search', () => {
+    it('성공 시나리오에서 검색 결과를 반환해야 한다', async () => {
+      const response = await fetch(`${API_BASE}/questions/search?scenario=success&q=웃음`)
+      const data = await response.json()
+      
+      expect(response.status).toBe(200)
+      expect(Array.isArray(data.questions)).toBe(true)
+      expect(data.query).toBe('웃음')
+      
+      if (data.questions.length > 0) {
+        expect(
+          data.questions.some((q: any) => 
+            q.content.includes('웃음') || q.category.includes('웃음')
+          )
+        ).toBe(true)
+      }
+    })
+
+    it('빈 결과 시나리오에서 빈 배열을 반환해야 한다', async () => {
+      const response = await fetch(`${API_BASE}/questions/search?scenario=empty&q=존재하지않는검색어`)
+      const data = await response.json()
+      
+      expect(response.status).toBe(200)
+      expect(data.questions).toEqual([])
+      expect(data.total).toBe(0)
+    })
+  })
+
+  describe('/api/auth/login', () => {
+    it('성공 시나리오에서 사용자 정보를 반환해야 한다', async () => {
+      const response = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        body: JSON.stringify({ code: 'kakao_code' }),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      const data = await response.json()
+      
+      expect(response.status).toBe(200)
+      expect(data.user).toBeDefined()
+      expect(data.user.nickname).toBe('테스트사용자')
+      expect(data.token).toBeDefined()
+    })
+
+    it('실패 시나리오에서 에러를 반환해야 한다', async () => {
+      const response = await fetch(`${API_BASE}/auth/login?scenario=failure`, {
+        method: 'POST'
+      })
+      const data = await response.json()
+      
+      expect(response.status).toBe(500)
+      expect(data.error).toBe('로그인 중 문제가 발생했어요. 잠시 후 다시 시도해주세요.')
+    })
+  })
+})

@@ -1,8 +1,13 @@
 import { http, HttpResponse } from 'msw'
+import { flattenQuestions, getTodaysQuestion } from '@/lib/questions'
+import questionsData from '@/data/questions.json'
 
 // MSW 핸들러 - 4가지 시나리오 (success, failure, expired, empty) 지원
 
 const API_BASE = process.env.API_BASE_URL || 'http://localhost:3000/api'
+
+// 질문 데이터 준비
+const questions = flattenQuestions(questionsData)
 
 export const handlers = [
   // 카카오 로그인 - /api/auth/login
@@ -43,6 +48,7 @@ export const handlers = [
   http.get(`${API_BASE}/questions/today`, ({ request }) => {
     const url = new URL(request.url)
     const scenario = url.searchParams.get('scenario') || 'success'
+    const date = url.searchParams.get('date') || new Date().toISOString().split('T')[0]
     
     switch (scenario) {
       case 'failure':
@@ -61,13 +67,85 @@ export const handlers = [
           message: '오늘의 질문이 준비되지 않았어요.'
         })
       default: // success
+        const todaysQuestion = getTodaysQuestion(questions, date)
         return HttpResponse.json({
-          question: {
-            id: 'q_20250825',
-            content: '최근 웃음이 났던 순간은 언제였나요?',
-            category: '일상·하루',
-            date: '2025-08-25'
-          }
+          question: todaysQuestion
+        })
+    }
+  }),
+
+  // 모든 질문 - /api/questions
+  http.get(`${API_BASE}/questions`, ({ request }) => {
+    const url = new URL(request.url)
+    const scenario = url.searchParams.get('scenario') || 'success'
+    const category = url.searchParams.get('category')
+    
+    switch (scenario) {
+      case 'failure':
+        return HttpResponse.json(
+          { error: '질문을 불러오는 중 문제가 발생했어요. 잠시 후 다시 시도해주세요.' },
+          { status: 500 }
+        )
+      case 'expired':
+        return HttpResponse.json(
+          { error: '로그인이 필요해요. 로그인 후 진행됩니다.' },
+          { status: 401 }
+        )
+      case 'empty':
+        return HttpResponse.json({
+          questions: [],
+          total: 0
+        })
+      default: // success
+        let filteredQuestions = questions
+        if (category) {
+          filteredQuestions = questions.filter(q => q.category === category)
+        }
+        
+        return HttpResponse.json({
+          questions: filteredQuestions,
+          total: filteredQuestions.length,
+          categories: questionsData.categories.map(cat => ({
+            category: cat.category,
+            count: questions.filter(q => q.category === cat.category).length
+          }))
+        })
+    }
+  }),
+
+  // 질문 검색 - /api/questions/search
+  http.get(`${API_BASE}/questions/search`, ({ request }) => {
+    const url = new URL(request.url)
+    const scenario = url.searchParams.get('scenario') || 'success'
+    const query = url.searchParams.get('q') || ''
+    
+    switch (scenario) {
+      case 'failure':
+        return HttpResponse.json(
+          { error: '검색 중 문제가 발생했어요. 잠시 후 다시 시도해주세요.' },
+          { status: 500 }
+        )
+      case 'expired':
+        return HttpResponse.json(
+          { error: '로그인이 필요해요. 로그인 후 진행됩니다.' },
+          { status: 401 }
+        )
+      case 'empty':
+        return HttpResponse.json({
+          questions: [],
+          total: 0,
+          query
+        })
+      default: // success
+        const searchResults = questions.filter(question =>
+          question.content.toLowerCase().includes(query.toLowerCase()) ||
+          question.category.toLowerCase().includes(query.toLowerCase())
+        )
+        
+        return HttpResponse.json({
+          questions: searchResults,
+          total: searchResults.length,
+          query
         })
     }
   }),
