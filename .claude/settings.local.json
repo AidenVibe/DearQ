@@ -5,9 +5,16 @@
       "Bash(git remote add:*)",
       "Bash(git push:*)",
       "Bash(git commit:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(tasklist:*)",
+      "Read(/C:\\c\\Users\\btsoft\\Desktop\\personal\\vibe-cording/**)",
+      "Bash(PORT=3002 npm run dev)",
+      "Bash(PORT=3005 npm run dev)"
     ],
     "deny": [],
-    "ask": []
+    "ask": [],
+    "additionalDirectories": [
+      "C:\\c\\Users\\btsoft\\Desktop\\personal\\vibe-cording"
+    ]
   }
 }
