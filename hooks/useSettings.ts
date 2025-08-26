@@ -500,7 +500,7 @@ export function useSettings(userId?: string, familyId?: string): UseSettingsRetu
     if (userId && !isInitialized) {
       loadSettings()
     }
-  }, [userId, isInitialized, loadSettings])
+  }, [userId, familyId, isInitialized])
 
   return {
     userSettings,

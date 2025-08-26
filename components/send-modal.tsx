@@ -54,27 +54,13 @@ export function SendModal({
   })
 
   useEffect(() => {
-    if (!isOpen) {
-      // 모달 닫힐 때 상태 초기화
-      setCurrentStep('select-recipient')
-      setSelectedLabel(null)
-      setSendResponse(null)
-      setError(null)
-      setAddLabelForm({ name: '', nickname: '' })
-      setIsLoading(false)
-    }
-  }, [isOpen])
-
-  useEffect(() => {
-    if (isOpen) {
-      // 모달 열릴 때도 상태 초기화
-      setCurrentStep('select-recipient')
-      setSelectedLabel(null)
-      setSendResponse(null)
-      setError(null)
-      setAddLabelForm({ name: '', nickname: '' })
-      setIsLoading(false)
-    }
+    // 모달 상태 변경시 초기화
+    setCurrentStep('select-recipient')
+    setSelectedLabel(null)
+    setSendResponse(null)
+    setError(null)
+    setAddLabelForm({ name: '', nickname: '' })
+    setIsLoading(false)
   }, [isOpen])
 
   const handleLabelSelect = (label: FamilyLabel) => {

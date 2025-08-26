@@ -2,51 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-
-// 임시 네비게이션 컴포넌트
-function Navigation() {
-  const router = useRouter()
-  
-  return (
-    <nav className="bg-white border-b border-gray-200 px-4 py-3">
-      <div className="container mx-auto flex items-center justify-between">
-        <button 
-          onClick={() => router.push('/home')}
-          className="text-xl font-bold text-primary"
-        >
-          마음배달
-        </button>
-        
-        <div className="flex space-x-4">
-          <button
-            onClick={() => router.push('/home')}
-            className="text-sm text-gray-600 hover:text-primary px-3 py-2 min-h-[44px]"
-          >
-            홈
-          </button>
-          <button
-            onClick={() => router.push('/history')}
-            className="text-sm text-gray-600 hover:text-primary px-3 py-2 min-h-[44px]"
-          >
-            히스토리
-          </button>
-          <button
-            onClick={() => router.push('/labels')}
-            className="text-sm text-gray-600 hover:text-primary px-3 py-2 min-h-[44px]"
-          >
-            가족관리
-          </button>
-          <button
-            onClick={() => router.push('/settings')}
-            className="text-sm text-gray-600 hover:text-primary px-3 py-2 min-h-[44px]"
-          >
-            설정
-          </button>
-        </div>
-      </div>
-    </nav>
-  )
-}
+import { BottomNavigation } from "@/components/ui/bottom-navigation"
 
 export default function AuthLayout({
   children,
@@ -57,13 +13,22 @@ export default function AuthLayout({
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
 
   useEffect(() => {
-    // 임시 인증 체크 (실제로는 JWT 토큰이나 세션 체크)
+    // localStorage 기반 임시 인증 체크
     const checkAuth = () => {
-      // MSW 환경에서는 기본적으로 인증된 상태로 간주
-      const authStatus = true // localStorage.getItem("isAuthenticated") === "true"
-      setIsAuthenticated(authStatus)
-      
-      if (!authStatus) {
+      try {
+        const userInfo = localStorage.getItem('dearq_user')
+        const authStatus = userInfo !== null
+        
+        console.log('인증 상태 체크:', authStatus ? '인증됨' : '미인증')
+        setIsAuthenticated(authStatus)
+        
+        if (!authStatus) {
+          console.log('미인증 사용자 - 로그인 페이지로 이동')
+          router.push('/login')
+        }
+      } catch (error) {
+        console.error('인증 체크 중 오류:', error)
+        setIsAuthenticated(false)
         router.push('/login')
       }
     }
@@ -87,11 +52,22 @@ export default function AuthLayout({
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
+    <div className="min-h-screen bg-background pb-16">
+      {/* 상단 헤더 - 브랜드명만 표시 */}
+      <header className="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-40">
+        <div className="container mx-auto">
+          <h1 className="text-xl font-bold text-primary text-center">
+            마음배달
+          </h1>
+        </div>
+      </header>
+      
       <main className="container mx-auto px-4 py-6">
         {children}
       </main>
+      
+      {/* 하단 네비게이션 */}
+      <BottomNavigation />
     </div>
   )
 }

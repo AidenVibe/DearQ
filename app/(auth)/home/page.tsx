@@ -1,20 +1,26 @@
 "use client"
 
 import { HomePage } from '@/components/home-page'
+import { getTodaysQuestion, dummyFamilyMembers, getUserStats, getFamilyStats } from '@/lib/dummy-data'
 
 export default function AuthHomePage() {
-  // 임시 테스트 데이터 (MSW 스텁과 일치)
+  // 더미데이터 사용
+  const currentUser = dummyFamilyMembers[2] // 김민수 (아들)
+  const todaysQuestion = getTodaysQuestion()
+  const userStats = getUserStats(currentUser.id)
+  const familyStats = getFamilyStats()
+
   const mockUser = {
-    id: 'user_123',
-    nickname: '테스트사용자',
-    profile_image: 'https://via.placeholder.com/40'
+    id: currentUser.id,
+    nickname: currentUser.name,
+    profile_image: currentUser.avatar
   }
 
   const mockTodaysQuestion = {
-    id: 'daily_01',
-    content: '최근 웃음이 났던 순간은 언제였나요?',
-    category: '일상·하루',
-    date: '2025-08-26'
+    id: todaysQuestion.id,
+    content: todaysQuestion.content,
+    category: todaysQuestion.category,
+    date: new Date(todaysQuestion.createdAt).toISOString().split('T')[0]
   }
 
   return (

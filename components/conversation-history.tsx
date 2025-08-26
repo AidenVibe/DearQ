@@ -385,9 +385,33 @@ export function ConversationHistoryPage({
                         <div className="flex items-start gap-2 mb-2">
                           <Badge 
                             variant="outline"
-                            className={statusLabels[conversation.status].color}
+                            className={(() => {
+                              try {
+                                if (!statusLabels || typeof statusLabels !== 'object') {
+                                  return 'bg-gray-100 text-gray-700';
+                                }
+                                const statusKey = conversation?.status || 'waiting';
+                                const status = statusLabels[statusKey] || statusLabels.waiting;
+                                return status?.color || 'bg-gray-100 text-gray-700';
+                              } catch (error) {
+                                console.warn('StatusLabels 접근 오류:', error);
+                                return 'bg-gray-100 text-gray-700';
+                              }
+                            })()}
                           >
-                            {statusLabels[conversation.status].label}
+                            {(() => {
+                              try {
+                                if (!statusLabels || typeof statusLabels !== 'object') {
+                                  return '대기중';
+                                }
+                                const statusKey = conversation?.status || 'waiting';
+                                const status = statusLabels[statusKey] || statusLabels.waiting;
+                                return status?.label || '대기중';
+                              } catch (error) {
+                                console.warn('StatusLabels 접근 오류:', error);
+                                return '대기중';
+                              }
+                            })()}
                           </Badge>
                           <Badge variant="secondary" className="text-xs">
                             {conversation.questionCategory}

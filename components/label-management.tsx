@@ -98,12 +98,23 @@ export function LabelManagementPage({
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
 
   useEffect(() => {
-    setState(prev => ({
-      ...prev,
-      labels: propLabels,
-      isLoading,
-      error: propError
-    }))
+    // 실제 변경이 있을 때만 state 업데이트
+    setState(prev => {
+      const hasLabelsChanged = JSON.stringify(prev.labels) !== JSON.stringify(propLabels);
+      const hasLoadingChanged = prev.isLoading !== isLoading;
+      const hasErrorChanged = prev.error !== propError;
+      
+      if (!hasLabelsChanged && !hasLoadingChanged && !hasErrorChanged) {
+        return prev; // 변경사항이 없으면 이전 state 반환
+      }
+      
+      return {
+        ...prev,
+        labels: propLabels,
+        isLoading,
+        error: propError
+      };
+    });
   }, [propLabels, isLoading, propError])
 
   // 필터링 및 정렬된 라벨 목록

@@ -17,12 +17,12 @@ if not exist "node_modules" (
 )
 
 echo 개발 서버를 시작합니다...
-echo 접속 주소: http://localhost:3005 (포트 3005 사용)
+echo 접속 주소: http://localhost:3010 (포트 3010 사용)
 echo.
 echo 서버를 중지하려면 Ctrl+C를 누르세요.
 echo.
 
-set PORT=3005
+set PORT=3010
 call npm run dev
 
 pause

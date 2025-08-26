@@ -339,9 +339,7 @@ export interface NotificationLimits {
 }
 
 // Hook 반환 타입
-export interface UseNotificationsReturn {
-  // 상태
-  ...NotificationManagerState
+export interface UseNotificationsReturn extends NotificationManagerState {
   
   // 알림 관리
   requestPermission: () => Promise<NotificationPermissionState>

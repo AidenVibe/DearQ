@@ -1,18 +1,19 @@
 'use client'
 
 import React, { useState, useCallback } from 'react'
-import { useSettingsContext } from '@/contexts/SettingsContext'
+// import { useSettingsContext } from '@/contexts/SettingsContext'
 import { SettingsSection } from '@/types/settings'
 import { ProfileSettings } from './sections/ProfileSettings'
 import { PersonalizationSettings } from './sections/PersonalizationSettings'
-import { NotificationSettings } from './sections/NotificationSettings'
-import { ConversationSettings } from './sections/ConversationSettings'
-import { WeeklyHighlightSettings } from './sections/WeeklyHighlightSettings'
-import { FamilySettings } from './sections/FamilySettings'
-import { PerformanceSettings } from './sections/PerformanceSettings'
-import { SecuritySettings } from './sections/SecuritySettings'
-import { DataSettings } from './sections/DataSettings'
-import { AccessibilitySettings } from './sections/AccessibilitySettings'
+// TODO: 아래 모듈들이 구현되면 주석 해제
+// import { NotificationSettings } from './sections/NotificationSettings'
+// import { ConversationSettings } from './sections/ConversationSettings'
+// import { WeeklyHighlightSettings } from './sections/WeeklyHighlightSettings'
+// import { FamilySettings } from './sections/FamilySettings'
+// import { PerformanceSettings } from './sections/PerformanceSettings'
+// import { SecuritySettings } from './sections/SecuritySettings'
+// import { DataSettings } from './sections/DataSettings'
+// import { AccessibilitySettings } from './sections/AccessibilitySettings'
 
 interface SettingsPageProps {
   className?: string
@@ -27,15 +28,28 @@ export function SettingsPage({
   className = '', 
   initialSection = 'profile' 
 }: SettingsPageProps) {
-  const { 
-    sections, 
-    syncState, 
-    error, 
-    clearError,
-    syncWithServer,
-    exportSettings,
-    isInitialized 
-  } = useSettingsContext()
+  // TODO: SettingsProvider 추가 후 주석 해제
+  // const { 
+  //   sections, 
+  //   syncState, 
+  //   error, 
+  //   clearError,
+  //   syncWithServer,
+  //   exportSettings,
+  //   isInitialized 
+  // } = useSettingsContext()
+  
+  // 임시 더미 데이터
+  const sections: SettingsSection[] = [
+    { id: 'profile', title: '프로필', description: '사용자 프로필 설정', icon: 'user', order: 1, isVisible: true },
+    { id: 'personalization', title: '개인화', description: '테마 및 개인화 설정', icon: 'palette', order: 2, isVisible: true }
+  ]
+  const syncState = { isLoading: false, pendingChanges: 0, isOnline: true, lastSyncAt: null }
+  const error = null
+  const clearError = () => {}
+  const syncWithServer = async () => {}
+  const exportSettings = async () => ({ version: '1.0.0', data: {} })
+  const isInitialized = true
   
   const [activeSection, setActiveSection] = useState(initialSection)
   const [searchQuery, setSearchQuery] = useState('')
@@ -89,6 +103,15 @@ export function SettingsPage({
     )
   )
 
+  // 임시 설정 컴포넌트
+  const PlaceholderSettings = ({ title }: { title: string }) => (
+    <div className="p-6 text-center">
+      <h2 className="text-lg font-semibold text-slate-900 mb-2">{title}</h2>
+      <p className="text-slate-600">이 설정 섹션은 아직 구현되지 않았습니다.</p>
+      <p className="text-sm text-slate-500 mt-2">곧 업데이트 예정입니다.</p>
+    </div>
+  )
+
   // 활성 섹션 렌더링
   const renderActiveSection = () => {
     switch (activeSection) {
@@ -97,21 +120,21 @@ export function SettingsPage({
       case 'personalization':
         return <PersonalizationSettings />
       case 'notifications':
-        return <NotificationSettings />
+        return <PlaceholderSettings title="알림 설정" />
       case 'conversation':
-        return <ConversationSettings />
+        return <PlaceholderSettings title="대화 설정" />
       case 'weeklyHighlight':
-        return <WeeklyHighlightSettings />
+        return <PlaceholderSettings title="주간 하이라이트 설정" />
       case 'family':
-        return <FamilySettings />
+        return <PlaceholderSettings title="가족 설정" />
       case 'performance':
-        return <PerformanceSettings />
+        return <PlaceholderSettings title="성능 설정" />
       case 'security':
-        return <SecuritySettings />
+        return <PlaceholderSettings title="보안 설정" />
       case 'data':
-        return <DataSettings />
+        return <PlaceholderSettings title="데이터 설정" />
       case 'accessibility':
-        return <AccessibilitySettings />
+        return <PlaceholderSettings title="접근성 설정" />
       default:
         return <div className="text-center text-slate-500">설정 섹션을 선택해주세요.</div>
     }

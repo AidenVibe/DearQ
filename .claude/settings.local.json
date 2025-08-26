@@ -9,12 +9,27 @@
       "Bash(tasklist:*)",
       "Read(/C:\\c\\Users\\btsoft\\Desktop\\personal\\vibe-cording/**)",
       "Bash(PORT=3002 npm run dev)",
-      "Bash(PORT=3005 npm run dev)"
+      "Bash(PORT=3005 npm run dev)",
+      "Read(/C:\\Users\\btsoft\\Desktop\\personal/**)",
+      "Bash(npm run dev:*)",
+      "Bash(taskkill:*)",
+      "Bash(PORT=3009 npm run dev)",
+      "Bash(npm run typecheck:*)",
+      "Bash(npm run build:*)",
+      "Bash(PORT=3010 npm run dev)",
+      "Bash(curl:*)",
+      "Bash(npm test:*)",
+      "Bash(npm install:*)",
+      "Bash(node:*)",
+      "Bash(del debug-pages.js labels-page-error.png history-page-error.png)",
+      "Bash(set PORT=3011)",
+      "Bash(npx next dev:*)"
     ],
     "deny": [],
     "ask": [],
     "additionalDirectories": [
-      "C:\\c\\Users\\btsoft\\Desktop\\personal\\vibe-cording"
+      "C:\\c\\Users\\btsoft\\Desktop\\personal\\vibe-cording",
+      "C:\\"
     ]
   }
 }
